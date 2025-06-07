@@ -1,70 +1,69 @@
 #!/bin/bash
 
-# Exit on error
-set -e
+set -euo pipefail
 
 echo "🌟 Starting Dotfiles Installation..."
 
 # -------------------------
-# 1. Packages to Install
+# 1. Required packages list
 # -------------------------
-REQUIRED_PACKAGES=(
+PACKAGES=(
   hyprland kitty rofi waybar dunst nwg-look
   neofetch sddm hyprpaper brightnessctl
   ttf-jetbrains-mono ttf-font-awesome
 )
 
-echo "📦 Installing required packages..."
-
-for pkg in "${REQUIRED_PACKAGES[@]}"; do
-  if ! pacman -Qi $pkg &> /dev/null; then
-    echo "Installing $pkg..."
-    sudo pacman -S --noconfirm --needed $pkg
+echo "📦 Installing packages via pacman..."
+for pkg in "${PACKAGES[@]}"; do
+  if pacman -Qi "$pkg" &>/dev/null; then
+    echo "✅ $pkg is already installed."
   else
-    echo "$pkg already installed ✔️"
+    echo "⏳ Installing $pkg..."
+    sudo pacman -S --noconfirm --needed "$pkg"
   fi
 done
 
 # -------------------------
-# 2. Copy Config Files
+# 2. Copy config files
 # -------------------------
-echo "📁 Copying configuration files..."
+CONFIG_FOLDERS=(hypr kitty rofi waybar dunst neofetch hyprpaper)
 
-CONFIG_DIRS=(hypr kitty rofi waybar dunst neofetch hyprpaper)
-
-for dir in "${CONFIG_DIRS[@]}"; do
-  echo "➡️ Installing $dir config..."
-  mkdir -p "$HOME/.config/$dir"
-  cp -r "$dir/"* "$HOME/.config/$dir/"
+echo "📁 Copying configuration files to ~/.config/..."
+for folder in "${CONFIG_FOLDERS[@]}"; do
+  SRC="./$folder"
+  DEST="$HOME/.config/$folder"
+  
+  if [ -d "$SRC" ]; then
+    echo "➡️ Copying $folder configs..."
+    mkdir -p "$DEST"
+    cp -r "$SRC/"* "$DEST/"
+  else
+    echo "⚠️ Warning: Config folder '$SRC' not found!"
+  fi
 done
 
 # -------------------------
-# 3. Fonts (Optional)
+# 3. Install fonts (if any)
 # -------------------------
-if [ -d "fonts" ]; then
+if [ -d "./fonts" ]; then
   echo "🔤 Installing fonts..."
-  mkdir -p ~/.local/share/fonts
-  cp -r fonts/* ~/.local/share/fonts
+  mkdir -p "$HOME/.local/share/fonts"
+  cp -r ./fonts/* "$HOME/.local/share/fonts/"
   fc-cache -fv
-fi
-
-# -------------------------
-# 4. Enable SDDM
-# -------------------------
-echo "🖥️ Enabling SDDM..."
-sudo systemctl enable sddm
-
-# -------------------------
-# 5. Wallpaper Setup
-# -------------------------
-if [ -f "$HOME/.config/hyprpaper/hyprpaper.conf" ]; then
-  echo "🖼️ Wallpaper setup detected."
 else
-  echo "⚠️ No hyprpaper.conf found. Set your wallpaper manually later."
+  echo "ℹ️ No fonts directory found. Skipping font installation."
 fi
 
 # -------------------------
-# 6. Done!
+# 4. Enable SDDM service
 # -------------------------
-echo "✅ Dotfiles installed successfully!"
-echo "💡 Reboot or relogin to start Hyprland."
+echo "🖥️ Enabling SDDM display manager..."
+sudo systemctl enable sddm.service
+
+# -------------------------
+# 5. Final message
+# -------------------------
+echo "✅ Dotfiles installation completed!"
+echo "💡 Reboot or log out and back in to start using Hyprland."
+
+exit 0
