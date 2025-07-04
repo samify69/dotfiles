@@ -1,54 +1,24 @@
-#!/bin/bash
+animations {
+    enabled = yes
 
-set -euo pipefail
+    # 🔁 Custom Beziers for silky smooth feel
+    bezier = wind, 0.25, 1, 0.3, 1
+    bezier = winIn, 0.4, 0.0, 0.2, 1
+    bezier = winOut, 0.5, 0.1, 0.3, 1
+    bezier = smooth, 0.3, 0.7, 0.4, 1
+    bezier = liner, 1, 1, 1, 1
 
-echo "🌟 Starting Dotfiles Installation..."
+    # 🎬 Smoothest motion experience
+    animation = windows, 1, 7, smooth, slidefade
+    animation = windowsIn, 1, 8, winIn, slide
+    animation = windowsOut, 1, 6, winOut, slide
+    animation = windowsMove, 1, 6, wind, slide
 
-# List packages to install
-packages=(
-  hyprland kitty rofi waybar dunst nwg-look
-  neofetch sddm hyprpaper brightnessctl
-  ttf-jetbrains-mono ttf-font-awesome
-)
+    # 🔲 Borders and fades
+    animation = border, 1, 2, liner
+    animation = borderangle, 1, 40, liner, loop
+    animation = fade, 1, 10, smooth
 
-echo "📦 Installing packages..."
-for pkg in "${packages[@]}"; do
-  if pacman -Qi "$pkg" &>/dev/null; then
-    echo "✅ $pkg is already installed."
-  else
-    echo "⏳ Installing $pkg..."
-    sudo pacman -S --noconfirm --needed "$pkg"
-  fi
-done
-
-# Copy config folders
-config_folders=(hypr kitty rofi waybar dunst neofetch hyprpaper)
-
-echo "📁 Copying config files..."
-for folder in "${config_folders[@]}"; do
-  if [ -d "./$folder" ]; then
-    mkdir -p "$HOME/.config/$folder"
-    cp -r "./$folder/"* "$HOME/.config/$folder/"
-    echo "✔ Copied $folder configs."
-  else
-    echo "⚠️ Folder ./$folder not found, skipping."
-  fi
-done
-
-# Fonts install
-if [ -d "./fonts" ]; then
-  echo "🔤 Installing fonts..."
-  mkdir -p "$HOME/.local/share/fonts"
-  cp -r ./fonts/* "$HOME/.local/share/fonts/"
-  fc-cache -fv
-else
-  echo "ℹ️ No fonts folder found, skipping fonts installation."
-fi
-
-# Enable SDDM
-echo "🖥️ Enabling SDDM service..."
-sudo systemctl enable sddm.service
-
-echo "✅ Installation complete! Reboot or logout to start Hyprland."
-
-exit 0
+    # 🔄 Workspaces transitions
+    animation = workspaces, 1, 7, wind
+}
