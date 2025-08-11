@@ -1,24 +1,24 @@
 animations {
     enabled = yes
 
-    # 🔁 Custom Beziers for silky smooth feel
-    bezier = wind, 0.25, 1, 0.3, 1
-    bezier = winIn, 0.4, 0.0, 0.2, 1
-    bezier = winOut, 0.5, 0.1, 0.3, 1
-    bezier = smooth, 0.3, 0.7, 0.4, 1
+    # 🧠 Hyper-refined bezier curves for brand-level motion
+    bezier = hyprbrandIn, 0.23, 1, 0.32, 1.1
+    bezier = hyprbrandOut, 0.5, -0.1, 0.3, 1
+    bezier = brandMove, 0.2, 0.8, 0.2, 1
+    bezier = minimalFade, 0.4, 0, 0.2, 1
     bezier = liner, 1, 1, 1, 1
 
-    # 🎬 Smoothest motion experience
-    animation = windows, 1, 7, smooth, slidefade
-    animation = windowsIn, 1, 8, winIn, slide
-    animation = windowsOut, 1, 6, winOut, slide
-    animation = windowsMove, 1, 6, wind, slide
+    # 🪟 Windows: every transition feels like butter
+    animation = windows, 1, 7, hyprbrandIn, slidefade
+    animation = windowsIn, 1, 8, hyprbrandIn, slidefade
+    animation = windowsOut, 1, 6, hyprbrandOut, slidefade
+    animation = windowsMove, 1, 6, brandMove, slide
 
-    # 🔲 Borders and fades
+    # 🖼️ Fades and subtle border flow
+    animation = fade, 1, 10, minimalFade
     animation = border, 1, 2, liner
-    animation = borderangle, 1, 40, liner, loop
-    animation = fade, 1, 10, smooth
+    animation = borderangle, 1, 35, liner, loop
 
-    # 🔄 Workspaces transitions
-    animation = workspaces, 1, 7, wind
+    # 🧭 Workspace transitions feel like a cinematic cut
+    animation = workspaces, 1, 6, hyprbrandIn
 }
